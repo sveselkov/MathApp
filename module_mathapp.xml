@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_mathapp" default="compile.module.mathapp">
+  <dirname property="module.mathapp.basedir" file="${ant.file.module_mathapp}"/>
+  
+  <property name="module.jdk.home.mathapp" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.mathapp" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.mathapp" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.mathapp" value="-encoding windows-1252 -source 8 ${compiler.args}"/>
+  
+  <property name="mathapp.output.dir" value="${module.mathapp.basedir}/out/production/MathApp"/>
+  <property name="mathapp.testoutput.dir" value="${module.mathapp.basedir}/out/test/MathApp"/>
+  
+  <path id="mathapp.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="mathapp.module.production.classpath">
+    <path refid="${module.jdk.classpath.mathapp}"/>
+    <path refid="library.groovy-2.4.0.beta-1.classpath"/>
+    <path refid="library.apache-collections:commons-collections:3.1.classpath"/>
+  </path>
+  
+  <path id="mathapp.runtime.production.module.classpath">
+    <pathelement location="${mathapp.output.dir}"/>
+    <path refid="library.groovy-2.4.0.beta-1.classpath"/>
+    <path refid="library.apache-collections:commons-collections:3.1.classpath"/>
+  </path>
+  
+  <path id="mathapp.module.classpath">
+    <path refid="${module.jdk.classpath.mathapp}"/>
+    <pathelement location="${mathapp.output.dir}"/>
+    <path refid="library.groovy-2.4.0.beta-1.classpath"/>
+    <path refid="library.apache-collections:commons-collections:3.1.classpath"/>
+  </path>
+  
+  <path id="mathapp.runtime.module.classpath">
+    <pathelement location="${mathapp.testoutput.dir}"/>
+    <pathelement location="${mathapp.output.dir}"/>
+    <path refid="library.groovy-2.4.0.beta-1.classpath"/>
+    <path refid="library.apache-collections:commons-collections:3.1.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.mathapp">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.mathapp">
+    <patternset refid="excluded.from.module.mathapp"/>
+  </patternset>
+  
+  <path id="mathapp.module.sourcepath">
+    <dirset dir="${module.mathapp.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.mathapp" depends="compile.module.mathapp.production,compile.module.mathapp.tests" description="Compile module MathApp"/>
+  
+  <target name="compile.module.mathapp.production" depends="register.custom.compilers" description="Compile module MathApp; production classes">
+    <mkdir dir="${mathapp.output.dir}"/>
+    <javac2 destdir="${mathapp.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mathapp}/javac">
+      <compilerarg line="${compiler.args.mathapp}"/>
+      <bootclasspath refid="mathapp.module.bootclasspath"/>
+      <classpath refid="mathapp.module.production.classpath"/>
+      <src refid="mathapp.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.mathapp"/>
+    </javac2>
+    
+    <copy todir="${mathapp.output.dir}">
+      <fileset dir="${module.mathapp.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.mathapp.tests" depends="register.custom.compilers,compile.module.mathapp.production" description="compile module MathApp; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.mathapp" description="cleanup module">
+    <delete dir="${mathapp.output.dir}"/>
+    <delete dir="${mathapp.testoutput.dir}"/>
+  </target>
+</project>
