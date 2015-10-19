@@ -33,13 +33,20 @@ public class GraphUtils<V> {
 
         do {
             List<Node<V>> adjVertices = adgList.get(curr_v);
+            V shortest = curr_v;
+            int shLength = Integer.MAX_VALUE;
             for ( Node<V> node: adjVertices){
                 Integer pathLength = node.getWeight() + shortPathes.get( curr_v);
                 if ( pathLength < shortPathes.get(node.getName())){
                     shortPathes.put(node.getName(),pathLength);
-
+                }
+                if ( pathLength < shLength){
+                    shLength = pathLength;
+                    shortest = node.getName();
                 }
             }
+            curr_v = shortest;
+            vertices.remove(curr_v);
         } while ( vertices.size() > 0);
         return ( shortPathes);
     }
